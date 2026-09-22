@@ -33,8 +33,13 @@ public:
 	// Producto vectorial con otro vector
 	Vector3D cross(const Vector3D& otherV) const { return Vector3D(y * otherV.z - z * otherV.y, x * otherV.z - z * otherV.x, x * otherV.y - y * otherV.x); }
 
-	// Operador de igualdad
-	bool operator==(const Vector3D& otherV) const { return (x == otherV.x && y == otherV.y && z == otherV.z); }
+	// Operador de asignacion
+	void operator=(const Vector3D& otherV)  
+	{ 
+		x = otherV.x;
+		y = otherV.y;
+		z = otherV.z;
+	}
 
 	// Operador de suma
 	Vector3D operator+(const Vector3D& otherV) const { return Vector3D(x + otherV.x, y + otherV.y, z * otherV.z); }
