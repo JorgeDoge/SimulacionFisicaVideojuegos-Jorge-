@@ -41,9 +41,7 @@ void Particle::integrate(double t)
 
 void Particle::eulerIntegrate(double t)
 {
-	pos.p.x += vel.x * t;
-	pos.p.y += vel.y * t;
-	pos.p.z += vel.z * t;
+	pos.p += accel * t;
 	vel += accel * t;
 	vel = vel * pow(damping, t);
 }
@@ -51,9 +49,7 @@ void Particle::eulerIntegrate(double t)
 void Particle::semiEulerIntegrate(double t)
 {
 	vel += accel * t;
-	pos.p.x += vel.x * t;
-	pos.p.y += vel.y * t;
-	pos.p.z += vel.z * t;
+	pos.p += vel * t;
 	vel = vel * pow(damping, t);
 }
 
@@ -62,9 +58,5 @@ void Particle::verletIntegrate(double t)
 	physx::PxTransform currPos = pos;
 
 	pos.p = 2 * pos.p - lastPos.p + physx::PxTransform(accel * pow(t, 2)).p;
-	vel += accel * t;
-	pos.p.x += vel.x * t;
-	pos.p.y += vel.y * t;
-	pos.p.z += vel.z * t;
-	vel = vel * pow(damping, t);
+	lastPos = currPos;
 }
