@@ -21,7 +21,8 @@ public:
 private:
 	Vector3D vel;
 	Vector3D accel;
-	physx::PxTransform pose;
+	physx::PxTransform pos;
+	physx::PxTransform lastPos;
 	float damping;
 
 	RenderItem* renderItem;

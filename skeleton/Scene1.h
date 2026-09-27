@@ -17,16 +17,8 @@ public:
         //physx::PxShape* shape = CreateShape(physx::PxSphereGeometry(2.0f));
         m_transform = physx::PxTransform(physx::PxVec3(0.0f, 10.0f, 0.0f));
 
-        Particle newParticle(Vector3D(0, 0, 0), Vector3D(2.0f, 2.0f, 0.0f));
-        m_particles.push_back(newParticle);
-
-        /*
-        Particle newParticle(Vector3D(0, 0, 0), Vector3D(2.0f, 2.0f, 0.0f));
-        // Crear la partícula en el heap y guardarla en el vector de punteros.
-        // Se proporciona aceleración nula, un factor de damping y el tipo de integrador.
         Particle* newParticle = new Particle(Vector3D(0, 0, 0), Vector3D(2.0f, 2.0f, 0.0f), Vector3D(0, 0, 0), 0.99f, Euler);
         m_particles.push_back(newParticle);
-        */
     }
 
     void update(double dt) override {
