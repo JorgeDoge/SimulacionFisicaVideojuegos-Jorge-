@@ -41,7 +41,7 @@ void Particle::integrate(double t)
 
 void Particle::eulerIntegrate(double t)
 {
-	pos.p += accel * t;
+	pos.p += vel * t;
 	vel += accel * t;
 	vel = vel * pow(damping, t);
 }

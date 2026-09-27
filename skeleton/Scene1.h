@@ -17,7 +17,7 @@ public:
         //physx::PxShape* shape = CreateShape(physx::PxSphereGeometry(2.0f));
         m_transform = physx::PxTransform(physx::PxVec3(0.0f, 10.0f, 0.0f));
 
-        Particle* newParticle = new Particle(Vector3D(0, 0, 0), Vector3D(2.0f, 2.0f, 0.0f), Vector3D(0, 0, 0), 0.99f, Euler);
+        Particle* newParticle = new Particle(Vector3D(0, 0, 0), Vector3D(2.0f, 2.0f, 0.0f), Vector3D(0, 0, 0), 0.99f, SemiEuler);
         m_particles.push_back(newParticle);
     }
 
