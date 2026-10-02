@@ -16,7 +16,7 @@ public:
 	Particle(Vector3D Pos, Vector3D Vel, Vector3D Accel, float Damping, Integrator integratorType);
 	~Particle();
 
-	void integrate(double t);
+	virtual void integrate(double t);
 
 private:
 	Vector3D vel;

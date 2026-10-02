@@ -29,7 +29,7 @@ void Particle::integrate(double t)
 	// Integrador de Verlet (por hacer)
 	else if (currIntegrator == Integrator::Verlet)
 	{
-		if (!lastPos.p.isZero()) verletIntegrate(t);
+		if (lastPos.p != pos.p) verletIntegrate(t);
 
 		else
 		{
