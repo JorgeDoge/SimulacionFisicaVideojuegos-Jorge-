@@ -1,6 +1,17 @@
 #pragma once
 #include "Particle.h"
 
+struct ProjectileData
+{
+	float mass;
+	float speed;
+	float accel;
+
+	ProjectileData(const float newMass, const float newSpeed, const float newAccel) : mass(newMass), speed(newSpeed), accel(newAccel)
+	{
+	}
+};
+
 class Projectile : public Particle
 {
 public:

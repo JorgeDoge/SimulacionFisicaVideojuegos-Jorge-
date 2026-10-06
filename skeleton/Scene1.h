@@ -9,6 +9,9 @@
 
 using namespace std;
 
+const float MAX_REAL_SPEED = 10000.0f;
+const float MAX_SPEED = 100.0f;
+
 class Scene1 : public Scene {
 public:
     explicit Scene1(std::string name) : Scene(std::move(name)) {}
@@ -16,15 +19,21 @@ public:
     void init() override {
         // Ejemplo: Creación de una esfera usando las utilidades de render existentes
         //physx::PxShape* shape = CreateShape(physx::PxSphereGeometry(2.0f));
-        m_transform = physx::PxTransform(physx::PxVec3(0.0f, 10.0f, 0.0f));
+        m_transform = physx::PxTransform(0.0f, 0.0f, 0.0f);
 		m_bulletSpeed = 10.0f;
         
         // Gravedad en la tierra
-        m_gravity = Vector3D(0, -9.8f, 0);
+        m_gravity = -9.81f;
 
-        physx::PxShape* plane = CreateShape(physx::PxPlaneGeometry());
-        renderItem = new RenderItem(plane, &pos, Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+        // Suelo
+        physx::PxShape* floor = CreateShape(physx::PxBoxGeometry(50.0f, 0.1f, 50.0f)); 
+        m_renderItems.push_back(new RenderItem(floor, &m_transform, Vector4(1.0f, 1.0f, 1.0f, 1.0f)));
 
+        // "Diana"
+        physx::PxTransform* targetPos = new physx::PxTransform(0.0f, 20.0f, 0.0f);
+        m_transforms.push_back(targetPos);
+        physx::PxShape* target = CreateShape(physx::PxSphereGeometry(5.0f));
+        m_renderItems.push_back(new RenderItem(target, targetPos, Vector4(0.0f, 0.0f, 1.0f, 1.0f)));
     }
 
     void update(double dt) override {
@@ -36,7 +45,9 @@ public:
 
     void keyPress(unsigned char key, const physx::PxTransform& camera) override {
         if (key == 'f' || key == 'F') {
-			shoot(camera); // Dispara un proyectil
+            ProjectileData bullet(0.008f, 300.0f, m_gravity);
+
+			shoot(camera, bullet); // Dispara un proyectil
         }
 
         else if (key == 'r' || key == 'R') {
@@ -66,23 +77,33 @@ public:
             }
     }
 
-    void shoot(const physx::PxTransform& pos)
+    void shoot(const physx::PxTransform& pos, ProjectileData data)
     {
+        // Si la velocidad supera el límite, se escalan los datos
+        if (data.speed > MAX_SPEED) scale(data);
+
+        // Dirección perpendicular al puerto de vista de la cámara
 		Vector3D direction = Vector3D(pos.q.rotate(physx::PxVec3(0, 0, -1))).normalize(); 
 
-        Projectile* newProjectile = new Projectile(5.0f, pos.p, direction * m_bulletSpeed, m_gravity, 0.99f, SemiEuler);
+        // Creamos el proyectil
+        Projectile* newProjectile = new Projectile(data.mass, pos.p, direction * data.speed, Vector3D(0.0f, data.accel, 0.0f), 0.99f, SemiEuler);
         m_particles.push_back(newProjectile);
     }
 
-    void scale()
+    void scale(ProjectileData& data)
     {
-        
+        float realSpeed = data.speed;
+        float simSpeed = 5 + (20 * data.speed / MAX_SPEED);
+
+        data.speed = simSpeed;
+        data.mass = data.mass * pow(realSpeed / simSpeed, 2);
+        data.accel = data.accel * pow(simSpeed / realSpeed, 2);
     }
 
 private:
-    vector<physx::PxTransform> transforms;
+    vector<physx::PxTransform*> m_transforms;
     float m_bulletSpeed;
-    Vector3D m_gravity;
+    float m_gravity;
     physx::PxTransform m_transform;
     vector<RenderItem*> m_renderItems;
     vector<Particle*> m_particles;
