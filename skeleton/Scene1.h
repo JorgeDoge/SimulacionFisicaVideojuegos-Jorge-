@@ -38,8 +38,15 @@ public:
 
     void update(double dt) override {
         for (Particle* particle : m_particles)
-            if (particle) {
+            if (particle != nullptr) {
                 particle->integrate(dt);
+                particle->shortenLifespan(dt);
+
+                if (particle->hasExpired())
+                {
+                    delete particle;
+                    particle = nullptr;
+                }
             }
     }
 
@@ -65,13 +72,13 @@ public:
 
     void cleanup() override {
         for (RenderItem* item : m_renderItems)
-            if (item) {
+            if (item != nullptr) {
                 item->release(); // Deregistra y destruye el item
                 item = nullptr;
             }
 
         for (Particle* particle : m_particles)
-            if (particle) {
+            if (particle != nullptr) {
                 delete particle; // Destructor de la particula
                 particle = nullptr;
             }

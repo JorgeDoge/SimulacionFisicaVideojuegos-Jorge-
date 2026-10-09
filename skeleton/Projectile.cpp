@@ -1,12 +1,13 @@
 #include "Projectile.h"
 
-Projectile::Projectile(float Mass, Vector3D Pos, Vector3D Vel, Vector3D Accel, float Damping, Integrator integratorType)
-	: Particle(Pos, Vel, Accel, Damping, integratorType)
+Projectile::Projectile(const float Mass, const Vector3D Pos, const Vector3D Vel, const Vector3D Accel, 
+	const float Damping, const float newLifespan, const Integrator integratorType)
+	: Particle(Pos, Vel, Accel, Damping, newLifespan, integratorType), mass(Mass)
 {
-	mass = Mass;
 }
 
-void Projectile::integrate(double t)
+// Se usará más adelante(?)
+void Projectile::integrate(const double t)
 {
 
 

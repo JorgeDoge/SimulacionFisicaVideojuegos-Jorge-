@@ -7,7 +7,8 @@ struct ProjectileData
 	float speed;
 	float accel;
 
-	ProjectileData(const float newMass, const float newSpeed, const float newAccel) : mass(newMass), speed(newSpeed), accel(newAccel)
+	ProjectileData(const float newMass, const float newSpeed, const float newAccel) 
+		: mass(newMass), speed(newSpeed), accel(newAccel)
 	{
 	}
 };
@@ -15,9 +16,10 @@ struct ProjectileData
 class Projectile : public Particle
 {
 public:
-	Projectile(float Mass, Vector3D Pos, Vector3D Vel, Vector3D Accel, float Damping, Integrator integratorType);
+	Projectile(const float Mass, const Vector3D Pos, const Vector3D Vel, const Vector3D Accel, 
+		const float Damping, const float newLifespan = 10.0f, Integrator integratorType = Integrator::SemiEuler);
 
-	virtual void integrate(double t) override;
+	virtual void integrate(const double dt) override;
 
 private:
 	float mass;

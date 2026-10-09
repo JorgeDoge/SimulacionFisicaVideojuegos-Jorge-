@@ -1,16 +1,12 @@
 #include "Particle.h"
 
-Particle::Particle(Vector3D Pos, Vector3D Vel, Vector3D Accel = Vector3D(0.0f, 0.0f, 0.0f), float Damping = 0.98f, Integrator integratorType = Integrator::SemiEuler)
+Particle::Particle(const Vector3D Pos, const Vector3D Vel, const Vector3D Accel, 
+	const float Damping, const float newLifespan, const Integrator integratorType)
+	: pos(Pos), lastPos(physx::PxTransform(0, 0, 0)), vel(Vel), accel(Accel), 
+	damping(Damping), lifespan(newLifespan), currIntegrator(integratorType)
 {
-	pos = physx::PxTransform(Pos);
-	lastPos = physx::PxTransform(0, 0, 0);
-	vel = Vel;
-	accel = Accel;
-	damping = Damping;
-
 	physx::PxShape* sphere = CreateShape(physx::PxSphereGeometry(1.0f));
 	renderItem = new RenderItem(sphere, &pos, Vector4(1.0f, 1.0f, 1.0f, 1.0f)); 
-	currIntegrator = integratorType;
 }
 
 Particle::~Particle()
@@ -18,45 +14,45 @@ Particle::~Particle()
 	renderItem->release();
 }
 
-void Particle::integrate(double t)
+void Particle::integrate(const double dt)
 {
 	// Integrador de Euler
-	if (currIntegrator == Integrator::Euler) eulerIntegrate(t);
+	if (currIntegrator == Integrator::Euler) eulerIntegrate(dt);
 
 	// Integrador de Euler semi-implicito
-	else if (currIntegrator == Integrator::SemiEuler) semiEulerIntegrate(t);
+	else if (currIntegrator == Integrator::SemiEuler) semiEulerIntegrate(dt);
 
 	// Integrador de Verlet (por hacer)
 	else if (currIntegrator == Integrator::Verlet)
 	{
-		if (lastPos.p != pos.p) verletIntegrate(t);
+		if (lastPos.p != pos.p) verletIntegrate(dt);
 
 		else
 		{
 			lastPos = pos;
-			semiEulerIntegrate(t);
+			semiEulerIntegrate(dt);
 		}
 	}
 }
 
-void Particle::eulerIntegrate(double t)
+void Particle::eulerIntegrate(const double dt)
 {
-	pos.p += vel * t;
-	vel += accel * t;
-	vel = vel * pow(damping, t);
+	pos.p += vel * dt;
+	vel += accel * dt;
+	vel = vel * pow(damping, dt);
 }
 
-void Particle::semiEulerIntegrate(double t)
+void Particle::semiEulerIntegrate(const double dt)
 {
-	vel += accel * t;
-	pos.p += vel * t;
-	vel = vel * pow(damping, t);
+	vel += accel * dt;
+	pos.p += vel * dt;
+	vel = vel * pow(damping, dt);
 }
 
-void Particle::verletIntegrate(double t)
+void Particle::verletIntegrate(const double dt)
 {
 	physx::PxTransform currPos = pos;
 
-	pos.p = 2 * pos.p - lastPos.p + physx::PxTransform(accel * pow(t, 2)).p;
+	pos.p = 2 * pos.p - lastPos.p + physx::PxTransform(accel * pow(dt, 2)).p;
 	lastPos = currPos;
 }
