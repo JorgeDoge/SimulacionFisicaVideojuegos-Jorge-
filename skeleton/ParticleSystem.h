@@ -8,10 +8,13 @@ using namespace std;
 
 class ParticleSystem
 {
+public:
 	ParticleSystem(const Vector3D newPos, const float newStdDeviation, const float newGravity = -10.0f)
 		: pos(newPos), stdDeviation(newStdDeviation), gravity(newGravity)
 	{
 	}
+
+	~ParticleSystem();
 
 	void spawnParticle();
 	void update(double dt);

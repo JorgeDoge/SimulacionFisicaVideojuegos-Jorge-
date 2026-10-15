@@ -6,6 +6,7 @@
 #include "Vector3D.h"
 #include "Particle.h"
 #include "Projectile.h"
+#include "ParticleSystem.h"
 
 using namespace std;
 
@@ -34,10 +35,15 @@ public:
         m_transforms.push_back(targetPos);
         physx::PxShape* target = CreateShape(physx::PxSphereGeometry(5.0f));
         m_renderItems.push_back(new RenderItem(target, targetPos, Vector4(0.0f, 0.0f, 1.0f, 1.0f)));
+
+        ParticleSystem* newSystem = new ParticleSystem(targetPos->p, 2.0f);
+        m_particleSystems.push_back(newSystem);
     }
 
     void update(double dt) override {
-        for (Particle* particle : m_particles)
+        for (auto it = m_particles.begin(); it != m_particles.end(); )
+        {
+            Particle* particle = *it;
             if (particle != nullptr) {
                 particle->integrate(dt);
                 particle->shortenLifespan(dt);
@@ -45,8 +51,18 @@ public:
                 if (particle->hasExpired())
                 {
                     delete particle;
-                    particle = nullptr;
+                    it = m_particles.erase(it);  
                 }
+
+                else ++it;
+            }
+
+            else ++it;
+        }
+
+        for (ParticleSystem* system : m_particleSystems)
+            if (system != nullptr) {
+                system->update(dt);
             }
     }
 
@@ -82,6 +98,12 @@ public:
                 delete particle; // Destructor de la particula
                 particle = nullptr;
             }
+
+        for (ParticleSystem* system : m_particleSystems)
+            if (system != nullptr) {
+                delete system; // Destructor del sistema
+                system = nullptr;
+            }
     }
 
     void shoot(const physx::PxTransform& pos, ProjectileData data)
@@ -93,7 +115,7 @@ public:
 		Vector3D direction = Vector3D(pos.q.rotate(physx::PxVec3(0, 0, -1))).normalize(); 
 
         // Creamos el proyectil
-        Projectile* newProjectile = new Projectile(data.mass, pos.p, direction * data.speed, Vector3D(0.0f, data.accel, 0.0f), 0.99f, SemiEuler);
+        Projectile* newProjectile = new Projectile(data.mass, pos.p, direction * data.speed, Vector3D(0.0f, data.accel, 0.0f));
         m_particles.push_back(newProjectile);
     }
 
@@ -114,4 +136,5 @@ private:
     physx::PxTransform m_transform;
     vector<RenderItem*> m_renderItems;
     vector<Particle*> m_particles;
+    vector<ParticleSystem*> m_particleSystems;
 };

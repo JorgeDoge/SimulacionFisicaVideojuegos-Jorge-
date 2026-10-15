@@ -13,8 +13,8 @@ enum Integrator
 class Particle
 {
 public:
-	Particle(Vector3D Pos, Vector3D Vel, Vector3D Accel = Vector3D(0.0f, 0.0f, 0.0f), 
-		float Damping = 0.98f, float newLifespan = 10.0f, Integrator integratorType = Integrator::SemiEuler);
+	Particle(const float Mass, Vector3D Pos, Vector3D Vel, Vector3D Accel = Vector3D(0.0f, 0.0f, 0.0f), 
+		float Damping = 0.98f, float newLifespan = 2.0f, Integrator integratorType = Integrator::SemiEuler);
 	~Particle();
 
 	virtual void integrate(const double dt);
@@ -22,6 +22,7 @@ public:
 	bool hasExpired() const { return lifespan <= 0.0f; }
 
 private:
+	float mass;
 	Vector3D vel;
 	Vector3D accel;
 	physx::PxTransform pos;

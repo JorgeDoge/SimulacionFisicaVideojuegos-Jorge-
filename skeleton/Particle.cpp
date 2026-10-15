@@ -1,8 +1,8 @@
 #include "Particle.h"
 
-Particle::Particle(const Vector3D Pos, const Vector3D Vel, const Vector3D Accel, 
+Particle::Particle(const float Mass, const Vector3D Pos, const Vector3D Vel, const Vector3D Accel, 
 	const float Damping, const float newLifespan, const Integrator integratorType)
-	: pos(Pos), lastPos(physx::PxTransform(0, 0, 0)), vel(Vel), accel(Accel), 
+	: mass(Mass), pos(Pos), lastPos(physx::PxTransform(0, 0, 0)), vel(Vel), accel(Accel),
 	damping(Damping), lifespan(newLifespan), currIntegrator(integratorType)
 {
 	physx::PxShape* sphere = CreateShape(physx::PxSphereGeometry(1.0f));
