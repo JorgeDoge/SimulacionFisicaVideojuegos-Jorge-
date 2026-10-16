@@ -6,17 +6,18 @@
 
 using namespace std;
 
+constexpr int MAX_PARTICLES = 100;
+
+struct DistributionData
+{
+	float 
+};
+
 class ParticleSystem
 {
 public:
-	ParticleSystem(const Vector3D newPos, const float newStdDeviation, const float newGravity = -10.0f)
-		: pos(newPos), stdDeviation(newStdDeviation), gravity(newGravity)
-	{
-	}
-
+	ParticleSystem(const Vector3D newPos, const ParticleData& data, const float newStdDeviation, const float newGravity = -10.0f);
 	~ParticleSystem();
-
-	void spawnParticle();
 	void update(double dt);
 
 private:
@@ -24,5 +25,13 @@ private:
 	vector<Particle*> m_particles;
 	float stdDeviation;
 	float gravity;
+	int numParticles;
+	default_random_engine generator;
+	normal_distribution<float> pos_dist;
+	normal_distribution<float> speed_dist;
+	normal_distribution<float> dir_dist;
+	normal_distribution<float> lifetime_dist;
+
+	void spawnParticle();
 };
 

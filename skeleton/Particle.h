@@ -10,11 +10,27 @@ enum Integrator
 	Verlet
 };
 
+
+struct ParticleData
+{
+	float mass;
+	Vector3D pos;
+	Vector3D dir;
+	float speed;
+	float accel;
+	float lifetime;
+
+	ParticleData(const float newMass, const Vector3D newPos, const Vector3D newDir, const float newSpeed, const float newAccel, float newLifetime = 2.0f)
+		: mass(newMass), pos(newPos), dir(newDir), speed(newSpeed), accel(newAccel), lifetime(newLifetime)
+	{
+	}
+};
+
 class Particle
 {
 public:
 	Particle(const float Mass, Vector3D Pos, Vector3D Vel, Vector3D Accel = Vector3D(0.0f, 0.0f, 0.0f), 
-		float Damping = 0.98f, float newLifespan = 2.0f, Integrator integratorType = Integrator::SemiEuler);
+		float newLifespan = 2.0f, float Damping = 0.98f, Integrator integratorType = Integrator::SemiEuler);
 	~Particle();
 
 	virtual void integrate(const double dt);

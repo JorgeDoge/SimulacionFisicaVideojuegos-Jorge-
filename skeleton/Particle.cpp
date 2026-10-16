@@ -1,7 +1,7 @@
 #include "Particle.h"
 
 Particle::Particle(const float Mass, const Vector3D Pos, const Vector3D Vel, const Vector3D Accel, 
-	const float Damping, const float newLifespan, const Integrator integratorType)
+	const float newLifespan, const float Damping, const Integrator integratorType)
 	: mass(Mass), pos(Pos), lastPos(physx::PxTransform(0, 0, 0)), vel(Vel), accel(Accel),
 	damping(Damping), lifespan(newLifespan), currIntegrator(integratorType)
 {

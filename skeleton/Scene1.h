@@ -68,7 +68,10 @@ public:
 
     void keyPress(unsigned char key, const physx::PxTransform& camera) override {
         if (key == 'f' || key == 'F') {
-            ProjectileData bullet(0.008f, 300.0f, m_gravity);
+            // Dirección perpendicular al puerto de vista de la cámara
+            Vector3D direction = Vector3D(camera.q.rotate(physx::PxVec3(0, 0, -1))).normalize();
+
+            ParticleData bullet(0.008f, camera, direction, 300.0f, m_gravity);
 
 			shoot(camera, bullet); // Dispara un proyectil
         }
@@ -106,20 +109,17 @@ public:
             }
     }
 
-    void shoot(const physx::PxTransform& pos, ProjectileData data)
+    void shoot(const physx::PxTransform& pos, ParticleData& data)
     {
         // Si la velocidad supera el límite, se escalan los datos
         if (data.speed > MAX_SPEED) scale(data);
 
-        // Dirección perpendicular al puerto de vista de la cámara
-		Vector3D direction = Vector3D(pos.q.rotate(physx::PxVec3(0, 0, -1))).normalize(); 
-
         // Creamos el proyectil
-        Projectile* newProjectile = new Projectile(data.mass, pos.p, direction * data.speed, Vector3D(0.0f, data.accel, 0.0f));
+        Projectile* newProjectile = new Projectile(data.mass, pos.p, data.dir * data.speed, Vector3D(0.0f, data.accel, 0.0f), data.lifetime);
         m_particles.push_back(newProjectile);
     }
 
-    void scale(ProjectileData& data)
+    void scale(ParticleData& data)
     {
         float realSpeed = data.speed;
         float simSpeed = 5 + (20 * data.speed / MAX_SPEED);

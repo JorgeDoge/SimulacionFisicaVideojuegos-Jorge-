@@ -1,7 +1,7 @@
 #include "Projectile.h"
 
 Projectile::Projectile(const float Mass, const Vector3D Pos, const Vector3D Vel, const Vector3D Accel, 
-	const float Damping, const float newLifespan, const Integrator integratorType)
+	const float newLifespan, const float Damping, const Integrator integratorType)
 	: Particle(Mass, Pos, Vel, Accel, Damping, newLifespan, integratorType)
 {
 }
