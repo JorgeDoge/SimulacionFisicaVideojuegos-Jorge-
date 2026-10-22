@@ -1,12 +1,12 @@
 #include "ParticleSystem.h"
 
-ParticleSystem::ParticleSystem(const Vector3D newPos, const ParticleData& data, const float newStdDeviation, const float newGravity)
-    : pos(newPos), stdDeviation(newStdDeviation), gravity(newGravity), numParticles(0)
+ParticleSystem::ParticleSystem(const Vector3D newPos, const ParticleData& data, const DistributionData& distData)
+    : pos(newPos), particlesData(data), numParticles(0)
 {
-    pos_dist = normal_distribution<float>(0.0f, 0.1f);
-    dir_dist = normal_distribution<float>(0.0f, 0.05f);
-    speed_dist = normal_distribution<float>(data.speed, 1.0f);
-    lifetime_dist = normal_distribution<float>(data.lifetime, 1.0f);
+    pos_dist = normal_distribution<float>(0.0f, distData.posDev);
+    dir_dist = normal_distribution<float>(0.0f, distData.dirDev);
+    speed_dist = normal_distribution<float>(0.0f, distData.spdDev);
+    lifetime_dist = normal_distribution<float>(particlesData.lifetime, distData.lifeDev);
 }
 
 ParticleSystem::~ParticleSystem()
@@ -18,20 +18,6 @@ ParticleSystem::~ParticleSystem()
         }
 }
 
-void ParticleSystem::spawnParticle()
-{
-    random_device rd{};
-    mt19937 gen{rd()};
-
-    std::normal_distribution<double> normal{ 20.0f, stdDeviation };
-
-
-    float randomFloat = normal(gen);
-
-    m_particles.push_back(new Particle(0.0f, pos, Vector3D(0.0f, 0.0f, abs(randomFloat)), Vector3D(0.0f, gravity, 0.0f)));
-    ++numParticles;
-}
-
 void ParticleSystem::update(double dt)
 {
     for (auto it = m_particles.begin(); it != m_particles.end(); )
@@ -41,7 +27,7 @@ void ParticleSystem::update(double dt)
             particle->integrate(dt);
             particle->shortenLifespan(dt);
 
-            if (particle->hasExpired())
+            if (particle->hasExpired() || !checkBounds(particle->getPos()))
             {
                 delete particle;
                 it = m_particles.erase(it);
@@ -54,5 +40,26 @@ void ParticleSystem::update(double dt)
         else ++it;
     }
 
-    if(numParticles < MAX_PARTICLES) spawnParticle();
+    if (numParticles < MAX_PARTICLES) spawnParticle();
+}
+
+void ParticleSystem::spawnParticle()
+{
+    Vector3D const particlePos(pos.x + pos_dist(generator), pos.y + pos_dist(generator), pos.z + pos_dist(generator));
+    Vector3D const particleDir = Vector3D(particlesData.dir.x + dir_dist(generator), particlesData.dir.y + dir_dist(generator), particlesData.dir.z + dir_dist(generator)).normalize();
+    float const particleSpeed = particlesData.speed + speed_dist(generator);
+    float const particleLifetime = particlesData.lifetime + lifetime_dist(generator);
+
+    ParticleData newParticleData(particlesData.mass, particlePos, particleDir, particleSpeed, particlesData.accel, particleLifetime);
+    m_particles.push_back(new Particle(newParticleData));
+    ++numParticles;
+}
+
+bool ParticleSystem::checkBounds(const Vector3D& particlePos) {
+    float const boxLength = PARTICLE_BOUNDS / 2.0f;
+
+    // Comprobamos si la partícula se sale del "cubo" que representa su zona
+    if ((abs(particlePos.x - pos.x) > boxLength) || (abs(particlePos.y - pos.y) > boxLength) || (abs(particlePos.z - pos.z ) > boxLength)) return false;
+
+    return true;
 }

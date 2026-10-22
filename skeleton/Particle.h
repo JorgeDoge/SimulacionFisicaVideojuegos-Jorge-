@@ -17,10 +17,10 @@ struct ParticleData
 	Vector3D pos;
 	Vector3D dir;
 	float speed;
-	float accel;
+	Vector3D accel;
 	float lifetime;
 
-	ParticleData(const float newMass, const Vector3D newPos, const Vector3D newDir, const float newSpeed, const float newAccel, float newLifetime = 2.0f)
+	ParticleData(const float newMass, const Vector3D newPos, const Vector3D newDir, const float newSpeed, const Vector3D newAccel, float newLifetime = 2.0f)
 		: mass(newMass), pos(newPos), dir(newDir), speed(newSpeed), accel(newAccel), lifetime(newLifetime)
 	{
 	}
@@ -29,13 +29,14 @@ struct ParticleData
 class Particle
 {
 public:
-	Particle(const float Mass, Vector3D Pos, Vector3D Vel, Vector3D Accel = Vector3D(0.0f, 0.0f, 0.0f), 
-		float newLifespan = 2.0f, float Damping = 0.98f, Integrator integratorType = Integrator::SemiEuler);
+	Particle(ParticleData& data, float Damping = 0.98f, Integrator integratorType = Integrator::SemiEuler);
 	~Particle();
 
 	virtual void integrate(const double dt);
-	void shortenLifespan(const double dt) { lifespan -= dt; }
-	bool hasExpired() const { return lifespan <= 0.0f; }
+
+	void shortenLifespan(const double dt) { lifetime -= dt; }
+	bool hasExpired() const { return lifetime <= 0.0f; }
+	Vector3D getPos() const { return pos.p; }
 
 private:
 	float mass;
@@ -43,8 +44,8 @@ private:
 	Vector3D accel;
 	physx::PxTransform pos;
 	physx::PxTransform lastPos;
+	float lifetime;
 	float damping;
-	float lifespan;
 
 	RenderItem* renderItem;
 	Integrator currIntegrator;

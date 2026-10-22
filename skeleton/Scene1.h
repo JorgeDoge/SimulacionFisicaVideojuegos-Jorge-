@@ -36,7 +36,10 @@ public:
         physx::PxShape* target = CreateShape(physx::PxSphereGeometry(5.0f));
         m_renderItems.push_back(new RenderItem(target, targetPos, Vector4(0.0f, 0.0f, 1.0f, 1.0f)));
 
-        ParticleSystem* newSystem = new ParticleSystem(targetPos->p, 2.0f);
+        // Sistema de partículas
+        ParticleData bulletData(0.008f, Vector3D(0.0f, 4.0f, 0.0f), Vector3D(0.0f, 0.0f, -1.0f), 300.0f, Vector3D(0.0f, m_gravity, 0.0f));
+
+        ParticleSystem* newSystem = new ParticleSystem(targetPos->p, bulletData);
         m_particleSystems.push_back(newSystem);
     }
 
@@ -71,9 +74,8 @@ public:
             // Dirección perpendicular al puerto de vista de la cámara
             Vector3D direction = Vector3D(camera.q.rotate(physx::PxVec3(0, 0, -1))).normalize();
 
-            ParticleData bullet(0.008f, camera, direction, 300.0f, m_gravity);
-
-			shoot(camera, bullet); // Dispara un proyectil
+            ParticleData bulletData(0.008f, camera.p, direction, 300.0f, Vector3D(0.0f, m_gravity, 0.0f));
+			shoot(camera, bulletData); // Dispara un proyectil
         }
 
         else if (key == 'r' || key == 'R') {
@@ -115,7 +117,7 @@ public:
         if (data.speed > MAX_SPEED) scale(data);
 
         // Creamos el proyectil
-        Projectile* newProjectile = new Projectile(data.mass, pos.p, data.dir * data.speed, Vector3D(0.0f, data.accel, 0.0f), data.lifetime);
+        Projectile* newProjectile = new Projectile(data);
         m_particles.push_back(newProjectile);
     }
 

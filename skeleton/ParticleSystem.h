@@ -7,25 +7,33 @@
 using namespace std;
 
 constexpr int MAX_PARTICLES = 100;
+constexpr float PARTICLE_BOUNDS = 200.0f;
 
 struct DistributionData
 {
-	float 
+	float posDev;
+	float dirDev;
+	float spdDev;
+	float lifeDev;
+
+	DistributionData(const float newPosDev, const float newDirDev, const float newSpdDev, const float newLifeDev)
+		: posDev(newPosDev), dirDev(newDirDev),spdDev(newSpdDev), lifeDev(newSpdDev)
+	{}
 };
 
 class ParticleSystem
 {
 public:
-	ParticleSystem(const Vector3D newPos, const ParticleData& data, const float newStdDeviation, const float newGravity = -10.0f);
+	ParticleSystem(const Vector3D newPos, const ParticleData& data, const DistributionData& distData = { 0.1f, 0.05f, 1.0f, 1.0f });
 	~ParticleSystem();
 	void update(double dt);
 
 private:
 	Vector3D pos;
+	ParticleData particlesData;
 	vector<Particle*> m_particles;
-	float stdDeviation;
-	float gravity;
 	int numParticles;
+
 	default_random_engine generator;
 	normal_distribution<float> pos_dist;
 	normal_distribution<float> speed_dist;
@@ -33,5 +41,6 @@ private:
 	normal_distribution<float> lifetime_dist;
 
 	void spawnParticle();
+	bool checkBounds(const Vector3D& particlePos);
 };
 
