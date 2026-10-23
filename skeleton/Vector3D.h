@@ -50,6 +50,9 @@ public:
 	// Operador de multiplicacion por un escalar
 	Vector3D operator*(const float scale) const { return Vector3D(x * scale, y * scale, z * scale); }
 
+	// Operador de división por un escalar
+	Vector3D operator/(const float scale) const { return Vector3D(x / scale, y / scale, z / scale); }
+
 	// Operador de suma y guardado
 	void operator+=(const Vector3D& otherV)  
 	{ 

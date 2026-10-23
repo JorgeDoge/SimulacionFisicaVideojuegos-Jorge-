@@ -36,10 +36,13 @@ public:
         physx::PxShape* target = CreateShape(physx::PxSphereGeometry(5.0f));
         m_renderItems.push_back(new RenderItem(target, targetPos, Vector4(0.0f, 0.0f, 1.0f, 1.0f)));
 
-        // Sistema de partículas
-        ParticleData bulletData(0.008f, Vector3D(0.0f, 4.0f, 0.0f), Vector3D(0.0f, 0.0f, -1.0f), 300.0f, Vector3D(0.0f, m_gravity, 0.0f));
+        // Sistemaw de partículas
+        ParticleData bulletData(0.008f, Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 0.0f, -1.0f), 300.0f, Vector3D(0.0f, m_gravity, 0.0f));
+        ParticleData dropData(0.008f, Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, -1.0f, 0.0f), 10.0f, Vector3D(0.0f, m_gravity, 0.0f));
 
-        ParticleSystem* newSystem = new ParticleSystem(targetPos->p, bulletData);
+        DistributionData rainDist(10.0f, 1.0f, 0.01f, 1.0f);
+
+        ParticleSystem* newSystem = new ParticleSystem(targetPos->p, dropData, rainDist);
         m_particleSystems.push_back(newSystem);
     }
 

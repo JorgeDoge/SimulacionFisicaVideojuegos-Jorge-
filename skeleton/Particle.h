@@ -1,7 +1,9 @@
 #pragma once
 
+#include <vector>
 #include "RenderUtils.hpp"
 #include "Vector3D.h"
+#include "ForceGenerator.h"
 
 enum Integrator
 {
@@ -37,16 +39,19 @@ public:
 	void shortenLifespan(const double dt) { lifetime -= dt; }
 	bool hasExpired() const { return lifetime <= 0.0f; }
 	Vector3D getPos() const { return pos.p; }
+	void addForce(Vector3D addedForce) { accumForce += addedForce; }
 
 private:
 	float mass;
-	Vector3D vel;
-	Vector3D accel;
 	physx::PxTransform pos;
 	physx::PxTransform lastPos;
+	Vector3D vel;
+	Vector3D accel;
+	Vector3D accumForce;
 	float lifetime;
 	float damping;
 
+	std::vector<ForceGenerator*> forces;
 	RenderItem* renderItem;
 	Integrator currIntegrator;
 
