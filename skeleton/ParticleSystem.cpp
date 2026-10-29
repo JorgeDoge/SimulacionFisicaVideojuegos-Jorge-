@@ -16,14 +16,26 @@ ParticleSystem::~ParticleSystem()
             delete particle; // Destructor del sistema
             particle = nullptr;
         }
+
+    for (ForceGenerator* force : m_forces)
+        if (force != nullptr) {
+            delete force; // Destructor de generadores de fuerzas
+            force = nullptr;
+        }
 }
 
-void ParticleSystem::update(double dt)
+void ParticleSystem::update(const double dt)
 {
     for (auto it = m_particles.begin(); it != m_particles.end(); )
     {
         Particle* particle = *it;
         if (particle != nullptr) {
+            particle->clearForce();
+            for (ForceGenerator* force : m_forces)
+            {
+                force->applyForce(particle, dt);
+            }
+
             particle->integrate(dt);
             particle->shortenLifespan(dt);
 

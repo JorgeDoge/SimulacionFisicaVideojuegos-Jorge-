@@ -7,6 +7,7 @@
 #include "Particle.h"
 #include "Projectile.h"
 #include "ParticleSystem.h"
+#include "GravityGenerator.h"
 
 using namespace std;
 
@@ -36,14 +37,17 @@ public:
         physx::PxShape* target = CreateShape(physx::PxSphereGeometry(5.0f));
         m_renderItems.push_back(new RenderItem(target, targetPos, Vector4(0.0f, 0.0f, 1.0f, 1.0f)));
 
-        // Sistemaw de partículas
+        // Sistemas de partículas
         ParticleData bulletData(0.008f, Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 0.0f, -1.0f), 300.0f, Vector3D(0.0f, m_gravity, 0.0f));
-        ParticleData dropData(0.008f, Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, -1.0f, 0.0f), 10.0f, Vector3D(0.0f, m_gravity, 0.0f));
+        ParticleData dropData(8.0f, Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 0.0f, 0.0f), 0.0f, Vector3D(0.0f, 0, 0.0f));
 
-        DistributionData rainDist(10.0f, 1.0f, 0.01f, 1.0f);
+        DistributionData rainDist(10.0f, 1.0f, 1.0f, 1.0f);
 
-        ParticleSystem* newSystem = new ParticleSystem(targetPos->p, dropData, rainDist);
-        m_particleSystems.push_back(newSystem);
+        ParticleSystem* rainSystem = new ParticleSystem(targetPos->p, dropData, rainDist);
+        rainSystem->addForce(new GravityGenerator());
+        m_particleSystems.push_back(rainSystem);
+
+        m_forces.push_back(new GravityGenerator());
     }
 
     void update(double dt) override {
@@ -51,6 +55,12 @@ public:
         {
             Particle* particle = *it;
             if (particle != nullptr) {
+                particle->clearForce();
+                for (ForceGenerator* force : m_forces)
+                {
+                    force->applyForce(particle, dt);
+                }
+
                 particle->integrate(dt);
                 particle->shortenLifespan(dt);
 
@@ -112,6 +122,12 @@ public:
                 delete system; // Destructor del sistema
                 system = nullptr;
             }
+
+        for (ForceGenerator* force : m_forces)
+            if (force != nullptr) {
+                delete force; // Destructor de generadores de fuerzas
+                force = nullptr;
+            }
     }
 
     void shoot(const physx::PxTransform& pos, ParticleData& data)
@@ -138,8 +154,10 @@ private:
     vector<physx::PxTransform*> m_transforms;
     float m_bulletSpeed;
     float m_gravity;
+
     physx::PxTransform m_transform;
     vector<RenderItem*> m_renderItems;
     vector<Particle*> m_particles;
     vector<ParticleSystem*> m_particleSystems;
+    vector<ForceGenerator*> m_forces;
 };

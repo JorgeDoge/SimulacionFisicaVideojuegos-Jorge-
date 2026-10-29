@@ -1,7 +1,7 @@
 #include "Particle.h"
 
 Particle::Particle(ParticleData& data,  const float Damping, const Integrator integratorType)
-	: mass(data.mass), pos(data.pos), lastPos(physx::PxTransform(0, 0, 0)), vel(data.dir * data.speed), accel(data.accel), accumForce({0.0f, 0.0f, 0.0f}),
+	: mass(data.mass), pos(data.pos), lastPos(physx::PxTransform(0, 0, 0)), vel(data.dir * data.speed), accel(data.accel), accumForce({0, 0, 0}),
 	lifetime(data.lifetime), damping(Damping), currIntegrator(integratorType)
 {
 	physx::PxShape* sphere = CreateShape(physx::PxSphereGeometry(1.0f));
@@ -23,7 +23,7 @@ void Particle::integrate(const double dt)
 	// Integrador de Euler semi-implicito
 	else if (currIntegrator == Integrator::SemiEuler) semiEulerIntegrate(dt);
 
-	// Integrador de Verlet (por hacer)
+	// Integrador de Verlet 
 	else if (currIntegrator == Integrator::Verlet)
 	{
 		if (lastPos.p != pos.p) verletIntegrate(dt);

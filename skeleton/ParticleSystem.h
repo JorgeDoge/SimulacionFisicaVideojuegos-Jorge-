@@ -26,12 +26,14 @@ class ParticleSystem
 public:
 	ParticleSystem(const Vector3D newPos, const ParticleData& data, const DistributionData& distData = { 0.1f, 0.05f, 1.0f, 1.0f });
 	~ParticleSystem();
-	void update(double dt);
+	void update(const double dt);
+	void addForce(ForceGenerator* newForce) { m_forces.push_back(newForce); }
 
 private:
 	Vector3D pos;
 	ParticleData particlesData;
 	vector<Particle*> m_particles;
+	vector<ForceGenerator*> m_forces;
 	int numParticles;
 
 	default_random_engine generator;

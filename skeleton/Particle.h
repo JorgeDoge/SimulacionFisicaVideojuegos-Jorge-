@@ -39,7 +39,10 @@ public:
 	void shortenLifespan(const double dt) { lifetime -= dt; }
 	bool hasExpired() const { return lifetime <= 0.0f; }
 	Vector3D getPos() const { return pos.p; }
+	float getMass() const { return mass; }
+
 	void addForce(Vector3D addedForce) { accumForce += addedForce; }
+	void clearForce() { accumForce = Vector3D(0, 0, 0); }
 
 private:
 	float mass;
@@ -51,7 +54,6 @@ private:
 	float lifetime;
 	float damping;
 
-	std::vector<ForceGenerator*> forces;
 	RenderItem* renderItem;
 	Integrator currIntegrator;
 
