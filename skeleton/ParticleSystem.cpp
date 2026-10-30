@@ -11,6 +11,8 @@ ParticleSystem::ParticleSystem(const Vector3D newPos, const ParticleData& data, 
 
 ParticleSystem::~ParticleSystem()
 {
+    m_forceRegistry.clear();
+
     for (Particle* particle : m_particles)
         if (particle != nullptr) {
             delete particle; // Destructor del sistema
@@ -26,21 +28,23 @@ ParticleSystem::~ParticleSystem()
 
 void ParticleSystem::update(const double dt)
 {
+    // Las fuerzas se acumulan una vez al comienzo del ciclo de física.
+    for (Particle* particle : m_particles)
+        if (particle != nullptr)
+            particle->clearForce();
+
+    m_forceRegistry.updateForces(dt);
+
     for (auto it = m_particles.begin(); it != m_particles.end(); )
     {
         Particle* particle = *it;
         if (particle != nullptr) {
-            particle->clearForce();
-            for (ForceGenerator* force : m_forces)
-            {
-                force->applyForce(particle, dt);
-            }
-
             particle->integrate(dt);
             particle->shortenLifespan(dt);
 
             if (particle->hasExpired() || !checkBounds(particle->getPos()))
             {
+                m_forceRegistry.removeParticle(particle);
                 delete particle;
                 it = m_particles.erase(it);
                 --numParticles;
@@ -64,7 +68,18 @@ void ParticleSystem::spawnParticle()
 
     ParticleData newParticleData(particlesData.mass, particlePos, particleDir, particleSpeed, particlesData.accel, particleLifetime);
     m_particles.push_back(new Particle(newParticleData));
+    for (ForceGenerator* force : m_forces)
+        m_forceRegistry.add(m_particles.back(), force);
     ++numParticles;
+}
+
+void ParticleSystem::addForce(ForceGenerator* newForce)
+{
+    if (newForce == nullptr) return;
+
+    m_forces.push_back(newForce);
+    for (Particle* particle : m_particles)
+        m_forceRegistry.add(particle, newForce);
 }
 
 bool ParticleSystem::checkBounds(const Vector3D& particlePos) {

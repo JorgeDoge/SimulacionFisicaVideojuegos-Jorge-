@@ -3,6 +3,7 @@
 #include <random>
 #include "Vector3D.h"
 #include "Particle.h"
+#include "ParticleForceRegistry.h"
 
 using namespace std;
 
@@ -27,13 +28,14 @@ public:
 	ParticleSystem(const Vector3D newPos, const ParticleData& data, const DistributionData& distData = { 0.1f, 0.05f, 1.0f, 1.0f });
 	~ParticleSystem();
 	void update(const double dt);
-	void addForce(ForceGenerator* newForce) { m_forces.push_back(newForce); }
+	void addForce(ForceGenerator* newForce);
 
 private:
 	Vector3D pos;
 	ParticleData particlesData;
 	vector<Particle*> m_particles;
 	vector<ForceGenerator*> m_forces;
+	ParticleForceRegistry m_forceRegistry;
 	int numParticles;
 
 	default_random_engine generator;

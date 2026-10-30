@@ -8,6 +8,7 @@
 #include "Projectile.h"
 #include "ParticleSystem.h"
 #include "GravityGenerator.h"
+#include "ParticleForceRegistry.h"
 
 using namespace std;
 
@@ -51,21 +52,22 @@ public:
     }
 
     void update(double dt) override {
+        for (Particle* particle : m_particles)
+            if (particle != nullptr)
+                particle->clearForce();
+
+        m_forceRegistry.updateForces(dt);
+
         for (auto it = m_particles.begin(); it != m_particles.end(); )
         {
             Particle* particle = *it;
             if (particle != nullptr) {
-                particle->clearForce();
-                for (ForceGenerator* force : m_forces)
-                {
-                    force->applyForce(particle, dt);
-                }
-
                 particle->integrate(dt);
                 particle->shortenLifespan(dt);
 
                 if (particle->hasExpired())
                 {
+                    m_forceRegistry.removeParticle(particle);
                     delete particle;
                     it = m_particles.erase(it);  
                 }
@@ -87,7 +89,7 @@ public:
             // Dirección perpendicular al puerto de vista de la cámara
             Vector3D direction = Vector3D(camera.q.rotate(physx::PxVec3(0, 0, -1))).normalize();
 
-            ParticleData bulletData(0.008f, camera.p, direction, 300.0f, Vector3D(0.0f, m_gravity, 0.0f));
+            ParticleData bulletData(0.008f, camera.p, direction, 300.0f, Vector3D(0.0f, 0.0f, 0.0f));
 			shoot(camera, bulletData); // Dispara un proyectil
         }
 
@@ -113,6 +115,7 @@ public:
 
         for (Particle* particle : m_particles)
             if (particle != nullptr) {
+                m_forceRegistry.removeParticle(particle);
                 delete particle; // Destructor de la particula
                 particle = nullptr;
             }
@@ -138,6 +141,8 @@ public:
         // Creamos el proyectil
         Projectile* newProjectile = new Projectile(data);
         m_particles.push_back(newProjectile);
+        for (ForceGenerator* force : m_forces)
+            m_forceRegistry.add(newProjectile, force);
     }
 
     void scale(ParticleData& data)
@@ -160,4 +165,5 @@ private:
     vector<Particle*> m_particles;
     vector<ParticleSystem*> m_particleSystems;
     vector<ForceGenerator*> m_forces;
+    ParticleForceRegistry m_forceRegistry;
 };
