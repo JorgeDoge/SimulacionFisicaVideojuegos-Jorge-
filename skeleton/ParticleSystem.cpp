@@ -28,10 +28,9 @@ ParticleSystem::~ParticleSystem()
 
 void ParticleSystem::update(const double dt)
 {
-    // Las fuerzas se acumulan una vez al comienzo del ciclo de física.
+    // Las fuerzas se acumulan una vez al comienzo del ciclo de física
     for (Particle* particle : m_particles)
-        if (particle != nullptr)
-            particle->clearForce();
+        if (particle != nullptr) particle->clearForce();
 
     m_forceRegistry.updateForces(dt);
 

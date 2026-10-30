@@ -2,7 +2,7 @@
 
 Particle::Particle(ParticleData& data,  const float Damping, const Integrator integratorType)
 	: mass(data.mass), pos(data.pos), lastPos(physx::PxTransform(0, 0, 0)), vel(data.dir * data.speed), accel(data.accel), accumForce({0, 0, 0}),
-	lifetime(data.lifetime), damping(Damping), currIntegrator(integratorType)
+	frictionCoeff(data.friction), lifetime(data.lifetime), damping(Damping), currIntegrator(integratorType)
 {
 	physx::PxShape* sphere = CreateShape(physx::PxSphereGeometry(1.0f));
 	renderItem = new RenderItem(sphere, &pos, Vector4(1.0f, 1.0f, 1.0f, 1.0f)); 

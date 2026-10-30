@@ -7,7 +7,6 @@
 #include "Particle.h"
 #include "Projectile.h"
 #include "ParticleSystem.h"
-#include "GravityGenerator.h"
 #include "ParticleForceRegistry.h"
 
 using namespace std;
@@ -46,6 +45,7 @@ public:
 
         ParticleSystem* rainSystem = new ParticleSystem(targetPos->p, dropData, rainDist);
         rainSystem->addForce(new GravityGenerator());
+        rainSystem->addForce(new WindForceGenerator(Vector3D(0.0f, 0.0f, 200.0f)));
         m_particleSystems.push_back(rainSystem);
 
         m_forces.push_back(new GravityGenerator());
@@ -53,8 +53,7 @@ public:
 
     void update(double dt) override {
         for (Particle* particle : m_particles)
-            if (particle != nullptr)
-                particle->clearForce();
+            if (particle != nullptr) particle->clearForce();
 
         m_forceRegistry.updateForces(dt);
 

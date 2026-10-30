@@ -16,7 +16,6 @@
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />
-    <ClCompile Include="GravityGenerator.cpp" />
     <ClCompile Include="ForceGenerator.cpp" />
     <ClCompile Include="ParticleForceRegistry.cpp" />
   </ItemGroup>
@@ -39,7 +38,6 @@
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="ForceGenerator.h" />
-    <ClInclude Include="GravityGenerator.h" />
     <ClInclude Include="ParticleForceRegistry.h" />
   </ItemGroup>
   <ItemGroup>
