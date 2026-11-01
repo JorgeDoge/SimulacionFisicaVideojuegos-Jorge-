@@ -42,7 +42,7 @@ public:
 	}
 
 	// Operador de suma
-	Vector3D operator+(const Vector3D& otherV) const { return Vector3D(x + otherV.x, y + otherV.y, z * otherV.z); }
+	Vector3D operator+(const Vector3D& otherV) const { return Vector3D(x + otherV.x, y + otherV.y, z + otherV.z); }
 
 	// Operador de resta
 	Vector3D operator-(const Vector3D& otherV) const { return Vector3D(x - otherV.x, y - otherV.y, z - otherV.z); }

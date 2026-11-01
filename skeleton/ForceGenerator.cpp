@@ -14,6 +14,6 @@ void GravityGenerator::applyForce(Particle* p, const double dt)
 void WindForceGenerator::applyForce(Particle* p, const double dt)
 {
 	const Vector3D speedDiff = windVel - p->getVel();
-	force = speedDiff * p->getFriction() + (speedDiff * speedDiff.magnitude()) * 0;
+	force = speedDiff * p->getFriction() + ((speedDiff * speedDiff.magnitude()) * 0);
 	p->addForce(force);
 }
