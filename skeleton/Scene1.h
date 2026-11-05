@@ -8,6 +8,7 @@
 #include "Projectile.h"
 #include "ParticleSystem.h"
 #include "ParticleForceRegistry.h"
+#include "Whirlwind.h"
 
 using namespace std;
 
@@ -45,7 +46,8 @@ public:
 
         ParticleSystem* rainSystem = new ParticleSystem(targetPos->p, dropData, rainDist);
         rainSystem->addForce(new GravityGenerator());
-        rainSystem->addForce(new WindForceGenerator(Vector3D(0.0f, -30.0f, 0.0f), Vector3D(50.0f, 20.0f, 100.0f), Vector3D(0.0f, 0.0f, 200.0f)));
+        //rainSystem->addForce(new WindForceGenerator(Vector3D(0.0f, -30.0f, 0.0f), Vector3D(50.0f, 20.0f, 100.0f), Vector3D(0.0f, 0.0f, 200.0f)));
+        rainSystem->addForce(new Whirlwind(Vector3D(0.0f, 0.0f, 0.0f), 50.0f, 20.0f));
         m_particleSystems.push_back(rainSystem);
 
         m_forces.push_back(new GravityGenerator());

@@ -24,13 +24,12 @@ class WindForceGenerator : public ForceGenerator
 {
 public:
 	WindForceGenerator(const Vector3D& pos, const Vector3D& volume, const Vector3D& vel, const float p = 1.225f)
-		: ForceGenerator(Vector3D(0, 0, 0)), volumePos(pos), volumeOfEffect(volume), windVel(vel), density(p) {}
+		: ForceGenerator(Vector3D(0, 0, 0)), originPos(pos), volumeOfEffect(volume), windVel(vel), density(p) {}
 	virtual void applyForce(Particle* p, const double dt);
 
 protected:
-	Vector3D volumePos;
+	Vector3D originPos;
 	Vector3D volumeOfEffect;
 	Vector3D windVel;
 	float density;
 };
-

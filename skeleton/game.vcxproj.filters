@@ -18,7 +18,7 @@
     <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="ForceGenerator.cpp" />
     <ClCompile Include="ParticleForceRegistry.cpp" />
-    <ClCompile Include="WIND_USAGE_EXAMPLE.cpp" />
+    <ClCompile Include="Whirlwind.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="core.hpp" />
@@ -40,6 +40,7 @@
     <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="ForceGenerator.h" />
     <ClInclude Include="ParticleForceRegistry.h" />
+    <ClInclude Include="Whirlwind.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Render">

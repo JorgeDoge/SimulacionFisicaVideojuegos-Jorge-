@@ -274,7 +274,7 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Vector3D.cpp" />
-    <ClCompile Include="WIND_USAGE_EXAMPLE.cpp" />
+    <ClCompile Include="Whirlwind.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="callbacks.hpp" />
@@ -292,6 +292,7 @@
     <ClInclude Include="Scene1.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Vector3D.h" />
+    <ClInclude Include="Whirlwind.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
