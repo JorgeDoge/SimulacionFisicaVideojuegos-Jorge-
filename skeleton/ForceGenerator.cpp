@@ -3,16 +3,22 @@
 
 void ForceGenerator::applyForce(Particle* p, const double dt)
 {
+	if (!isActive) return;
+
 	p->addForce(force);
 }
 
 void GravityGenerator::applyForce(Particle* p, const double dt)
 {
+	if (!isActive) return;
+
 	p->addForce(Vector3D(0, -9.81f, 0) * p->getMass());
 }
 
 void WindForceGenerator::applyForce(Particle* p, const double dt)
 {
+	if (!isActive) return;
+
 	// Comprobamos si la particula se encuentra en el volumen en el que surte efecto el viento
 	if(abs(p->getPos().x) <= volumeOfEffect.x / 2 
 		&& abs(p->getPos().y) <= volumeOfEffect.y / 2 

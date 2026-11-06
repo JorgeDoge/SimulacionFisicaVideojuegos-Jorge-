@@ -6,12 +6,16 @@ class Particle;
 class ForceGenerator
 {
 public:
-	ForceGenerator(const Vector3D& genForce) : force(genForce) {}
+	ForceGenerator(const Vector3D& genForce) : force(genForce), isActive(true) {}
 	virtual void applyForce(Particle* p, const double dt);
 	virtual void update(const double dt) {};
 
+	void setActive(const bool active) { isActive = active; }
+	bool active() const { return isActive; }
+
 protected:
 	Vector3D force;
+	bool isActive;
 };
 		
 class GravityGenerator : public ForceGenerator

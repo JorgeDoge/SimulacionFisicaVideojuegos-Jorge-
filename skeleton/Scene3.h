@@ -100,14 +100,8 @@ public:
             shoot(camera, basketBallData); // Dispara un proyectil
         }
 
-        else if (key == 'r' || key == 'R') {
-            for (ParticleSystem* system : m_particleSystems)
-            {
-                // Explosión
-                Explosion* expForceGen = new Explosion(Vector3D(0.0f, 10.0f, 0.0f), 300.0f);
-                system->addForce(expForceGen);
-                m_forces.push_back(expForceGen);
-            }
+        else if (key == 'g' || key == 'G') {
+            m_forces[0]->setActive(!m_forces[0]->active()); // Activamos/desactivamos gravedad
         }
     }
 

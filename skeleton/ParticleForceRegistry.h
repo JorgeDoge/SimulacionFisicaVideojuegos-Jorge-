@@ -10,6 +10,7 @@ class ForceGenerator;
 class ParticleForceRegistry
 {
 public:
+	ParticleForceRegistry() = default;
 	void add(Particle* particle, ForceGenerator* generator);
 	void remove(Particle* particle, ForceGenerator* generator);
 	void removeParticle(Particle* particle);

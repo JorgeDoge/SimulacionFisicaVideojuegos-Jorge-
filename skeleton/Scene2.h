@@ -38,6 +38,8 @@ public:
         ParticleSystem* expSystem = new ParticleSystem(originPos->p, particleData, expDist);
 
         m_particleSystems.push_back(expSystem);
+
+        m_forces.push_back(new GravityGenerator());
     }
 
     void update(double dt) override {
@@ -98,6 +100,10 @@ public:
                 m_forces.push_back(expForceGen);
             }
         }
+
+        else if (key == 'g' || key == 'G') {
+            m_forces[0]->setActive(!m_forces[0]->active()); // Activamos/desactivamos gravedad de nuestros proyectiles
+        }
     }
 
     void cleanup() override {
@@ -125,7 +131,7 @@ public:
 
         for (ParticleSystem* system : m_particleSystems)
             if (system != nullptr) {
-                delete system; // Destructor del sistema
+                delete system; // Destructor del sistema de partículas
             }
 
         m_particleSystems.clear();

@@ -18,7 +18,6 @@ public:
         // Ejemplo: Creación de una esfera usando las utilidades de render existentes
         //physx::PxShape* shape = CreateShape(physx::PxSphereGeometry(2.0f));
         m_transform = physx::PxTransform(0.0f, 0.0f, 0.0f);
-		m_bulletSpeed = 10.0f;
         
         // Gravedad en la tierra
         m_gravity = -9.81f;
@@ -40,8 +39,6 @@ public:
 
         ParticleSystem* rainSystem = new ParticleSystem(targetPos->p, windData, windDist);
         GravityGenerator* gravity = new GravityGenerator();
-        rainSystem->addForce(gravity);
-        WindForceGenerator* windForce = new WindForceGenerator(Vector3D(0.0f, -30.0f, 0.0f), Vector3D(50.0f, 20.0f, 100.0f), Vector3D(0.0f, 0.0f, 200.0f));
         rainSystem->addForce(gravity);
         Whirlwind* hurricane = new Whirlwind(Vector3D(0.0f, 0.0f, 0.0f), 250.0f, 20.0f);
         rainSystem->addForce(hurricane);
@@ -85,13 +82,12 @@ public:
     }
 
     void keyPress(unsigned char key, const physx::PxTransform& camera) override {
-
-        if (key == 'q' || key == 'Q') {
-            m_bulletSpeed -= 10.0f; // Reducimos velocidad de los proyectiles
+        if (key == 'g' || key == 'G') {
+            m_forces[0]->setActive(!m_forces[0]->active()); // Activamos/desactivamos gravedad
         }
 
-        else if (key == 'e' || key == 'E') {
-            m_bulletSpeed += 10.0f; // Aumentamos velocidad de los proyectiles
+        else if (key == 'h' || key == 'H') {
+            m_forces[1]->setActive(!m_forces[1]->active()); // Activamos/desactivamos torbellino
         }
     }
 
@@ -150,7 +146,6 @@ public:
 
 private:
     vector<physx::PxTransform*> m_transforms;
-    float m_bulletSpeed;
     float m_gravity;
 
     physx::PxTransform m_transform;

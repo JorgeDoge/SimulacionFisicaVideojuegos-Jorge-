@@ -3,6 +3,8 @@
 
 void Whirlwind::applyForce(Particle* p, const double dt)
 {
+	if (!isActive) return;
+
 	const Vector3D rParticle = p->getPos() - originPos;
 	const float distance = sqrt(pow(rParticle.x, 2) + pow(rParticle.z, 2));
 
