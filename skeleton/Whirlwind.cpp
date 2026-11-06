@@ -10,14 +10,12 @@ void Whirlwind::applyForce(Particle* p, const double dt)
 	if (distance < radius)
 	{
 		// K * [-(z - zc), 0, (x - xc)]
-		const Vector3D currentWindVel = Vector3D(-(p->getPos().z - originPos.z), 
-			0.0f, 
-			(p->getPos().x - originPos.x)) * windForce;
+		const Vector3D currentWindVel = Vector3D(-rParticle.z, 0.0f, rParticle.x) * windForce;
 
-		// Aplicar la fuerza usando la velocidad calculada
-		const Vector3D speedDiff = currentWindVel - p->getVel();
-		const float quadraticCoeff = p->getDrag() * density;
-		force = speedDiff * p->getFriction() + ((speedDiff * speedDiff.magnitude()) * 0);
+		// Aplicamos la fuerza usando la velocidad calculada
+		const Vector3D velDiff = currentWindVel - p->getVel();
+		//const float quadraticCoeff = p->getDrag() * density; // Esto por ahora no se usa
+		force = velDiff * p->getFriction() + ((velDiff * velDiff.magnitude()) * 0);
 		p->addForce(force);
 	}
 }

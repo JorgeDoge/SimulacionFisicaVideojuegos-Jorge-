@@ -19,9 +19,9 @@ void WindForceGenerator::applyForce(Particle* p, const double dt)
 		&& abs(p->getPos().z) <= volumeOfEffect.z / 2)
 	{
 		// F = k1·(v.w - v.p) + k2·||v.w - v.p||·(v.w - v.p)
-		const Vector3D speedDiff = windVel - p->getVel();
+		const Vector3D velDiff = windVel - p->getVel();
 		const float quadraticCoeff = p->getDrag() * density; // Faltaria incluir el area de incidencia del viento en la particula
-		force = speedDiff * p->getFriction() + ((speedDiff * speedDiff.magnitude()) * 0);
+		force = velDiff * p->getFriction() + ((velDiff * velDiff.magnitude()) * 0);
 		p->addForce(force);
 	}
 

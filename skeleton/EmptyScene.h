@@ -15,8 +15,6 @@ public:
         // Ejemplo: Creación de una esfera usando las utilidades de render existentes
         //physx::PxShape* shape = CreateShape(physx::PxSphereGeometry(2.0f));
         m_transform = physx::PxTransform(physx::PxVec3(0.0f, 10.0f, 0.0f));
-
-        retoC();
     }
 
     void update(double dt) override {

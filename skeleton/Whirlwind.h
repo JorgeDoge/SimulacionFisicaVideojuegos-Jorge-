@@ -11,6 +11,4 @@ public:
 protected:
 	float radius;
 	float windForce;
-
-	Vector3D calculateVel(const Vector3D& particlePos) const;
 };

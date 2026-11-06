@@ -7,7 +7,7 @@
 
 using namespace std;
 
-constexpr int MAX_PARTICLES = 100;
+constexpr int MAX_PARTICLES = 500;
 constexpr float PARTICLE_BOUNDS = 500.0f;
 
 struct DistributionData

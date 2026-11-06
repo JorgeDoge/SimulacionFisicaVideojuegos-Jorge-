@@ -2,7 +2,7 @@
 
 Particle::Particle(ParticleData& data,  const float Damping, const Integrator integratorType)
 	: mass(data.mass), pos(data.pos), lastPos(physx::PxTransform(0, 0, 0)), vel(data.dir * data.speed), accel(data.accel), accumForce({0, 0, 0}),
-	lifetime(data.lifetime), damping(Damping), frictionCoeff(1.0f), dragCoeff(0.5f), currIntegrator(integratorType)
+	lifetime(data.lifetime), damping(Damping), frictionCoeff(1.0f), dragCoeff(0.5f), currIntegrator(integratorType), hasMoved(false)
 {
 	physx::PxShape* sphere = CreateShape(physx::PxSphereGeometry(1.0f));
 	renderItem = new RenderItem(sphere, &pos, Vector4(1.0f, 1.0f, 1.0f, 1.0f)); 
@@ -26,12 +26,13 @@ void Particle::integrate(const double dt)
 	// Integrador de Verlet 
 	else if (currIntegrator == Integrator::Verlet)
 	{
-		if (lastPos.p != pos.p) verletIntegrate(dt);
+		if (hasMoved) verletIntegrate(dt);
 
 		else
 		{
 			lastPos = pos;
 			semiEulerIntegrate(dt);
+			hasMoved = true;
 		}
 	}
 }

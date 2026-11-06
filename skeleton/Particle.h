@@ -66,6 +66,7 @@ private:
 
 	RenderItem* renderItem;
 	Integrator currIntegrator;
+	bool hasMoved;
 
 	// Metodo para cada integrador
 	void eulerIntegrate(const double dt);

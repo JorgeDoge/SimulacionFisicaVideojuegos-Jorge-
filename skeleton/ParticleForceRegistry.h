@@ -13,7 +13,7 @@ public:
 	void add(Particle* particle, ForceGenerator* generator);
 	void remove(Particle* particle, ForceGenerator* generator);
 	void removeParticle(Particle* particle);
-	void clear();
+	void clear() { registrations.clear(); }
 	void updateForces(double dt);
 
 private:

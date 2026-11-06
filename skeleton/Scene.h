@@ -3,6 +3,11 @@
 #include <string>
 #include "PxPhysicsAPI.h"
 
+using namespace std;
+
+const float MAX_REAL_SPEED = 10000.0f;
+const float MAX_SPEED = 100.0f;
+
 // Clase base para las distintas escenas de la aplicación.
 // Provee la interfaz mínima que debe implementar cualquier escena:
 // inicialización, limpieza, actualización por frame y manejo de teclado.

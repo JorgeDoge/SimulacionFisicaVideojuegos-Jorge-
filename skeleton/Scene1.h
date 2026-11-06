@@ -10,11 +10,6 @@
 #include "ParticleForceRegistry.h"
 #include "Whirlwind.h"
 
-using namespace std;
-
-const float MAX_REAL_SPEED = 10000.0f;
-const float MAX_SPEED = 100.0f;
-
 class Scene1 : public Scene {
 public:
     explicit Scene1(std::string name) : Scene(std::move(name)) {}
@@ -39,18 +34,22 @@ public:
         m_renderItems.push_back(new RenderItem(target, targetPos, Vector4(0.0f, 0.0f, 1.0f, 1.0f)));
 
         // Sistemas de partículas
-        ParticleData bulletData(0.008f, Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 0.0f, -1.0f), 300.0f, Vector3D(0.0f, m_gravity, 0.0f));
-        ParticleData dropData(8.0f, Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 0.0f, 0.0f), 0.0f, Vector3D(0.0f, 0, 0.0f));
+        ParticleData windData(8.0f, Vector3D(0.0f, 0.0f, 0.0f), Vector3D(0.0f, 0.0f, 0.0f), 0.0f, Vector3D(0.0f, 0, 0.0f));
 
-        DistributionData rainDist(10.0f, 1.0f, 1.0f, 1.0f);
+        DistributionData windDist(30.0f, 0.1f, 0.1f, 0.1f);
 
-        ParticleSystem* rainSystem = new ParticleSystem(targetPos->p, dropData, rainDist);
-        rainSystem->addForce(new GravityGenerator());
-        //rainSystem->addForce(new WindForceGenerator(Vector3D(0.0f, -30.0f, 0.0f), Vector3D(50.0f, 20.0f, 100.0f), Vector3D(0.0f, 0.0f, 200.0f)));
-        rainSystem->addForce(new Whirlwind(Vector3D(0.0f, 0.0f, 0.0f), 50.0f, 20.0f));
+        ParticleSystem* rainSystem = new ParticleSystem(targetPos->p, windData, windDist);
+        GravityGenerator* gravity = new GravityGenerator();
+        rainSystem->addForce(gravity);
+        WindForceGenerator* windForce = new WindForceGenerator(Vector3D(0.0f, -30.0f, 0.0f), Vector3D(50.0f, 20.0f, 100.0f), Vector3D(0.0f, 0.0f, 200.0f));
+        rainSystem->addForce(gravity);
+        Whirlwind* hurricane = new Whirlwind(Vector3D(0.0f, 0.0f, 0.0f), 250.0f, 20.0f);
+        rainSystem->addForce(hurricane);
+
         m_particleSystems.push_back(rainSystem);
 
-        m_forces.push_back(new GravityGenerator());
+        m_forces.push_back(gravity);
+        m_forces.push_back(hurricane);
     }
 
     void update(double dt) override {
@@ -86,19 +85,8 @@ public:
     }
 
     void keyPress(unsigned char key, const physx::PxTransform& camera) override {
-        if (key == 'f' || key == 'F') {
-            // Dirección perpendicular al puerto de vista de la cámara
-            Vector3D direction = Vector3D(camera.q.rotate(physx::PxVec3(0, 0, -1))).normalize();
 
-            ParticleData bulletData(0.008f, camera.p, direction, 300.0f, Vector3D(0.0f, 0.0f, 0.0f));
-			shoot(camera, bulletData); // Dispara un proyectil
-        }
-
-        else if (key == 'r' || key == 'R') {
-            m_transform.p = physx::PxVec3(0.0f, 10.0f, 0.0f); // Reset
-        }
-
-        else if (key == 'q' || key == 'Q') {
+        if (key == 'q' || key == 'Q') {
             m_bulletSpeed -= 10.0f; // Reducimos velocidad de los proyectiles
         }
 
@@ -111,27 +99,31 @@ public:
         for (RenderItem* item : m_renderItems)
             if (item != nullptr) {
                 item->release(); // Deregistra y destruye el item
-                item = nullptr;
             }
+
+        m_renderItems.clear();
 
         for (Particle* particle : m_particles)
             if (particle != nullptr) {
                 m_forceRegistry.removeParticle(particle);
                 delete particle; // Destructor de la particula
-                particle = nullptr;
             }
 
-        for (ParticleSystem* system : m_particleSystems)
-            if (system != nullptr) {
-                delete system; // Destructor del sistema
-                system = nullptr;
-            }
+        m_particles.clear();
 
         for (ForceGenerator* force : m_forces)
             if (force != nullptr) {
                 delete force; // Destructor de generadores de fuerzas
-                force = nullptr;
             }
+
+        m_forces.clear();
+
+        for (ParticleSystem* system : m_particleSystems)
+            if (system != nullptr) {
+                delete system; // Destructor del sistema
+            }
+
+        m_particleSystems.clear();
     }
 
     void shoot(const physx::PxTransform& pos, ParticleData& data)

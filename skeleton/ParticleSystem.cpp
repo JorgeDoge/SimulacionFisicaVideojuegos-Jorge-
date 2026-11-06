@@ -15,15 +15,11 @@ ParticleSystem::~ParticleSystem()
 
     for (Particle* particle : m_particles)
         if (particle != nullptr) {
-            delete particle; // Destructor del sistema
-            particle = nullptr;
+            delete particle;
         }
 
-    for (ForceGenerator* force : m_forces)
-        if (force != nullptr) {
-            delete force; // Destructor de generadores de fuerzas
-            force = nullptr;
-        }
+    m_particles.clear();
+    m_forces.clear(); // Las fuerzas se borran en la escena
 }
 
 void ParticleSystem::update(const double dt)
@@ -33,6 +29,11 @@ void ParticleSystem::update(const double dt)
         if (particle != nullptr) particle->clearForce();
 
     m_forceRegistry.updateForces(dt);
+
+    for (ForceGenerator* force : m_forces)
+    {
+        force->update(dt);
+    }
 
     for (auto it = m_particles.begin(); it != m_particles.end(); )
     {
@@ -82,7 +83,7 @@ void ParticleSystem::addForce(ForceGenerator* newForce)
 }
 
 bool ParticleSystem::checkBounds(const Vector3D& particlePos) {
-    float const boxLength = PARTICLE_BOUNDS / 2.0f;
+    float constexpr boxLength = PARTICLE_BOUNDS / 2.0f;
 
     // Comprobamos si la partícula se sale del "cubo" que representa su zona
     if ((abs(particlePos.x - pos.x) > boxLength) || (abs(particlePos.y - pos.y) > boxLength) || (abs(particlePos.z - pos.z ) > boxLength)) return false;

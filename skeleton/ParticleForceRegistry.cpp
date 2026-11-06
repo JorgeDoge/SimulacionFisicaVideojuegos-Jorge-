@@ -26,11 +26,6 @@ void ParticleForceRegistry::removeParticle(Particle* particle)
 		}), registrations.end());
 }
 
-void ParticleForceRegistry::clear()
-{
-	registrations.clear();
-}
-
 void ParticleForceRegistry::updateForces(const double dt)
 {
 	for (const pair<Particle*, ForceGenerator*>& registration : registrations)
