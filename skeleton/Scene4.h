@@ -29,10 +29,22 @@ public:
         physx::PxShape* floor = CreateShape(physx::PxBoxGeometry(50.0f, 0.1f, 50.0f));
         m_renderItems.push_back(new RenderItem(floor, &m_transform, Vector4(1.0f, 1.0f, 1.0f, 1.0f)));
 
-        Particle* p1 = new Particle(ParticleData(2.0f, { 0, 0, 0 }, { 0, 0, 0 }, 0.0f, { 0, 0, 0 }));
+        Particle* p1 = new Particle(ParticleData(2.0f, { 0, 10, 0 }, { 0, 0, 0 }, 0.0f, { 0, 0, 0 }));
+        Particle* p2 = new Particle(ParticleData(2.0f, { 0, 20, 0 }, { 0, 0, 0 }, 0.0f, { 0, 0, 0 }));
+
+        SpringForceGenerator* f1 = new SpringForceGenerator(1.0f, 10.0f, p2);
+        SpringForceGenerator* f2 = new SpringForceGenerator(1.0f, 10.0f, p1);
+
+        m_forceRegistry.add(p1, f1);
 
         GravityGenerator* gravity = new GravityGenerator();
+
+        m_particles.push_back(p1);
+        m_particles.push_back(p2);
         m_forces.push_back(gravity);
+        m_forces.push_back(f1);
+        m_forces.push_back(f2);
+        m_forceRegistry.add(p1, gravity);
     }
 
     void update(double dt) override {

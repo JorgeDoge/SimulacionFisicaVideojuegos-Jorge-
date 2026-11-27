@@ -19,5 +19,4 @@ public:
 
 private:
 	vector<pair<Particle*, ForceGenerator*>> registrations;
-
 };
